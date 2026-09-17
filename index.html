@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduPulse - Student Course & Assignment Management App</title>
+  <!-- Google Fonts: Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Main App Shell -->
+  <div class="app-container">
+
+    <!-- Top Navigation Bar -->
+    <header class="navbar">
+      <div class="navbar-left">
+        <button id="sidebar-toggle-btn" class="icon-btn mobile-only" title="Toggle Navigation">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="brand">
+          <div class="brand-logo">
+            <i class="fa-solid fa-graduation-cap"></i>
+          </div>
+          <div class="brand-text">
+            <span class="brand-title">EduPulse</span>
+            <span class="brand-subtitle">Course Hub</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="navbar-center">
+        <div class="search-box">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input type="text" id="global-search" placeholder="Search courses, assignments, grades...">
+        </div>
+      </div>
+
+      <div class="navbar-right">
+        <!-- Role Switcher Toggle -->
+        <div class="role-switcher-container">
+          <span class="role-label" id="role-student-label"><i class="fa-solid fa-user-graduate"></i> Student</span>
+          <label class="switch-toggle" title="Switch User Role">
+            <input type="checkbox" id="role-toggle-checkbox">
+            <span class="slider"></span>
+          </label>
+          <span class="role-label" id="role-admin-label"><i class="fa-solid fa-chalkboard-user"></i> Admin / Teacher</span>
+        </div>
+
+        <!-- Notification Bell -->
+        <div class="notification-dropdown-wrapper">
+          <button id="notif-btn" class="icon-btn relative-btn" title="Upcoming Deadlines">
+            <i class="fa-regular fa-bell"></i>
+            <span id="notif-badge" class="badge-count">0</span>
+          </button>
+          <div id="notif-dropdown" class="dropdown-panel hidden">
+            <div class="dropdown-header">
+              <h3><i class="fa-solid fa-clock"></i> Urgent Deadlines</h3>
+              <span id="notif-count-text">0 items</span>
+            </div>
+            <div id="notif-list" class="notif-list">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- User Profile Pill -->
+        <div class="user-profile-pill">
+          <div class="user-avatar" id="user-avatar-text">JD</div>
+          <div class="user-info">
+            <span class="user-name" id="user-name-display">Alex Morgan</span>
+            <span class="user-role-badge" id="user-role-display">Student</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Layout Content -->
+    <div class="main-layout">
+      <!-- Sidebar Navigation -->
+      <aside class="sidebar" id="app-sidebar">
+        <div class="sidebar-section">
+          <span class="sidebar-heading">MAIN MENU</span>
+          <nav class="sidebar-nav">
+            <a href="#" class="nav-item active" data-view="dashboard">
+              <i class="fa-solid fa-chart-pie"></i>
+              <span>Dashboard</span>
+            </a>
+            <a href="#" class="nav-item" data-view="courses">
+              <i class="fa-solid fa-book-bookmark"></i>
+              <span>My Courses</span>
+            </a>
+            <a href="#" class="nav-item" data-view="assignments">
+              <i class="fa-solid fa-list-check"></i>
+              <span>Assignments</span>
+              <span id="assignments-badge-count" class="nav-badge">0</span>
+            </a>
+            <a href="#" class="nav-item" data-view="grades">
+              <i class="fa-solid fa-award"></i>
+              <span>Grades & GPA</span>
+            </a>
+          </nav>
+        </div>
+
+        <!-- Admin Only Menu Section -->
+        <div class="sidebar-section admin-only-element" id="admin-sidebar-section">
+          <span class="sidebar-heading">TEACHER PORTAL</span>
+          <nav class="sidebar-nav">
+            <a href="#" class="nav-item" data-view="admin-hub">
+              <i class="fa-solid fa-sliders"></i>
+              <span>Management Hub</span>
+            </a>
+          </nav>
+        </div>
+
+        <div class="sidebar-section sidebar-footer-section">
+          <span class="sidebar-heading">SYSTEM</span>
+          <button id="reset-data-btn" class="reset-btn">
+            <i class="fa-solid fa-rotate-left"></i>
+            <span>Reset Demo Data</span>
+          </button>
+        </div>
+      </aside>
+
+      <!-- Dynamic Views Container -->
+      <main class="content-area">
+
+        <!-- ==================== 1. DASHBOARD VIEW ==================== -->
+        <section id="view-dashboard" class="view-section active">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">Welcome back, <span id="welcome-name">Alex</span>! 👋</h1>
+              <p class="view-subtitle">Here is an overview of your academic progress and upcoming deadlines.</p>
+            </div>
+            <div class="view-header-actions">
+              <button class="btn btn-primary" id="dash-quick-submit-btn">
+                <i class="fa-solid fa-upload"></i> Submit Assignment
+              </button>
+              <button class="btn btn-secondary admin-only-element" id="dash-quick-create-btn">
+                <i class="fa-solid fa-plus"></i> New Assignment
+              </button>
+            </div>
+          </div>
+
+          <!-- Key Metrics Row -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon icon-gpa">
+                <i class="fa-solid fa-star"></i>
+              </div>
+              <div class="stat-details">
+                <span class="stat-title">Overall GPA</span>
+                <span class="stat-value" id="stat-gpa">3.82</span>
+                <span class="stat-subtitle text-success"><i class="fa-solid fa-arrow-trend-up"></i> Top 10% of class</span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon icon-pending">
+                <i class="fa-solid fa-hourglass-half"></i>
+              </div>
+              <div class="stat-details">
+                <span class="stat-title">Pending Tasks</span>
+                <span class="stat-value" id="stat-pending">4</span>
+                <span class="stat-subtitle text-warning" id="stat-urgent-sub">2 due this week</span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon icon-completed">
+                <i class="fa-solid fa-circle-check"></i>
+              </div>
+              <div class="stat-details">
+                <span class="stat-title">Completion Rate</span>
+                <span class="stat-value" id="stat-completion">88%</span>
+                <span class="stat-subtitle text-muted" id="stat-submitted-ratio">14 of 16 completed</span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon icon-courses">
+                <i class="fa-solid fa-shapes"></i>
+              </div>
+              <div class="stat-details">
+                <span class="stat-title">Enrolled Courses</span>
+                <span class="stat-value" id="stat-courses-count">4</span>
+                <span class="stat-subtitle text-muted">Fall Semester 2026</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dashboard Two Column Grid -->
+          <div class="dashboard-grid">
+            <!-- Left Column: Upcoming Deadlines & Recent Assignments -->
+            <div class="dashboard-col">
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title-group">
+                    <i class="fa-solid fa-fire text-danger"></i>
+                    <h2>Urgent & Upcoming Deadlines</h2>
+                  </div>
+                  <a href="#" class="card-link" data-switch-view="assignments">View All</a>
+                </div>
+                <div class="card-body">
+                  <div id="dash-urgent-list" class="assignment-list-compact">
+                    <!-- Rendered via JS -->
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title-group">
+                    <i class="fa-solid fa-graduation-cap text-primary"></i>
+                    <h2>Course Overview</h2>
+                  </div>
+                  <a href="#" class="card-link" data-switch-view="courses">View Courses</a>
+                </div>
+                <div class="card-body">
+                  <div id="dash-courses-list" class="course-mini-grid">
+                    <!-- Rendered via JS -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column: Recent Grades & Activity -->
+            <div class="dashboard-col">
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title-group">
+                    <i class="fa-solid fa-award text-warning"></i>
+                    <h2>Recent Grades & Feedback</h2>
+                  </div>
+                  <a href="#" class="card-link" data-switch-view="grades">View All Grades</a>
+                </div>
+                <div class="card-body">
+                  <div id="dash-grades-feed" class="grades-feed-list">
+                    <!-- Rendered via JS -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quick Admin Banner if Teacher mode -->
+              <div class="card banner-card admin-only-element">
+                <div class="banner-content">
+                  <div class="banner-badge">TEACHER ACTIONS</div>
+                  <h3>Manage Class Coursework</h3>
+                  <p>Create new assignments, grade student submissions, or update course details.</p>
+                  <div class="banner-actions">
+                    <button class="btn btn-sm btn-light" id="dash-open-admin-btn">
+                      <i class="fa-solid fa-sliders"></i> Go to Admin Hub
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== 2. MY COURSES VIEW ==================== -->
+        <section id="view-courses" class="view-section">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">My Courses</h1>
+              <p class="view-subtitle">Manage enrolled subjects, view instructors, schedules, and grade status.</p>
+            </div>
+            <div class="view-header-actions">
+              <button class="btn btn-primary admin-only-element" id="add-course-btn">
+                <i class="fa-solid fa-plus"></i> Add New Course
+              </button>
+            </div>
+          </div>
+
+          <div id="courses-grid" class="courses-grid">
+            <!-- Rendered via JS -->
+          </div>
+        </section>
+
+        <!-- ==================== 3. ASSIGNMENTS VIEW ==================== -->
+        <section id="view-assignments" class="view-section">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">Assignments & Deadlines</h1>
+              <p class="view-subtitle">Track coursework, submit tasks before deadlines, and review feedback.</p>
+            </div>
+            <div class="view-header-actions">
+              <button class="btn btn-primary admin-only-element" id="create-assignment-btn">
+                <i class="fa-solid fa-plus"></i> Create Assignment
+              </button>
+            </div>
+          </div>
+
+          <!-- Filter & Controls Toolbar -->
+          <div class="controls-card">
+            <div class="filter-tabs" id="assignment-status-tabs">
+              <button class="filter-tab active" data-status="ALL">All Tasks (<span id="count-all">0</span>)</button>
+              <button class="filter-tab" data-status="PENDING">Pending (<span id="count-pending">0</span>)</button>
+              <button class="filter-tab" data-status="SUBMITTED">Submitted (<span id="count-submitted">0</span>)</button>
+              <button class="filter-tab" data-status="GRADED">Graded (<span id="count-graded">0</span>)</button>
+              <button class="filter-tab" data-status="OVERDUE">Overdue (<span id="count-overdue">0</span>)</button>
+            </div>
+
+            <div class="filter-dropdowns">
+              <select id="filter-course-select" class="form-select">
+                <option value="ALL">All Courses</option>
+                <!-- Rendered dynamically -->
+              </select>
+
+              <select id="filter-priority-select" class="form-select">
+                <option value="ALL">All Priorities</option>
+                <option value="HIGH">High Priority</option>
+                <option value="MEDIUM">Medium Priority</option>
+                <option value="LOW">Low Priority</option>
+              </select>
+
+              <select id="sort-assignments-select" class="form-select">
+                <option value="DUE_ASC">Due Date (Earliest First)</option>
+                <option value="DUE_DESC">Due Date (Latest First)</option>
+                <option value="PRIORITY">Priority (Highest First)</option>
+                <option value="COURSE">Course Code</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Assignments Grid / Cards -->
+          <div id="assignments-grid" class="assignments-grid">
+            <!-- Rendered via JS -->
+          </div>
+        </section>
+
+        <!-- ==================== 4. GRADES VIEW ==================== -->
+        <section id="view-grades" class="view-section">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">Grades & Performance</h1>
+              <p class="view-subtitle">Detailed grade breakdown, weighted scoring, and GPA analytics.</p>
+            </div>
+          </div>
+
+          <!-- GPA Overview Cards -->
+          <div class="gpa-summary-grid">
+            <div class="gpa-card">
+              <div class="gpa-ring-container">
+                <div class="gpa-value-large" id="grades-gpa-val">3.82</div>
+                <div class="gpa-scale">out of 4.00</div>
+              </div>
+              <div class="gpa-meta">
+                <h3>Cumulative GPA</h3>
+                <p>Based on 4 enrolled courses and weighted assignments.</p>
+                <div class="gpa-status-pill text-success"><i class="fa-solid fa-check"></i> Excellent Standing</div>
+              </div>
+            </div>
+
+            <div class="gpa-details-card">
+              <h3>Academic Performance Metrics</h3>
+              <div class="metrics-list">
+                <div class="metric-row">
+                  <span>Total Graded Assignments</span>
+                  <strong id="metric-total-graded">10 items</strong>
+                </div>
+                <div class="metric-row">
+                  <span>Average Score</span>
+                  <strong id="metric-avg-score">91.4%</strong>
+                </div>
+                <div class="metric-row">
+                  <span>Highest Scoring Course</span>
+                  <strong id="metric-best-course">CS101 (96.5%)</strong>
+                </div>
+                <div class="metric-row">
+                  <span>Letter Grade Equivalent</span>
+                  <strong class="badge-letter grade-a">A / 4.0</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Detailed Course Grade Cards -->
+          <div class="section-heading-row">
+            <h2>Course Breakdown</h2>
+          </div>
+          <div id="grades-courses-container" class="grades-courses-container">
+            <!-- Rendered via JS -->
+          </div>
+        </section>
+
+        <!-- ==================== 5. ADMIN / TEACHER PORTAL VIEW ==================== -->
+        <section id="view-admin-hub" class="view-section admin-only-element">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">Teacher & Admin Management Portal</h1>
+              <p class="view-subtitle">Create coursework, review student submissions, and manage class grades.</p>
+            </div>
+          </div>
+
+          <!-- Admin Sub Tabs Navigation -->
+          <div class="admin-tabs">
+            <button class="admin-tab active" data-admin-tab="assignments">
+              <i class="fa-solid fa-tasks"></i> Manage Assignments
+            </button>
+            <button class="admin-tab" data-admin-tab="gradebook">
+              <i class="fa-solid fa-book-open-reader"></i> Interactive Gradebook
+            </button>
+            <button class="admin-tab" data-admin-tab="submissions">
+              <i class="fa-solid fa-inbox"></i> Review Submissions
+            </button>
+            <button class="admin-tab" data-admin-tab="courses">
+              <i class="fa-solid fa-folder-plus"></i> Manage Courses
+            </button>
+          </div>
+
+          <!-- Admin Content Tab 1: Manage Assignments -->
+          <div id="admin-tab-assignments" class="admin-tab-content active">
+            <div class="card">
+              <div class="card-header">
+                <h2>All Created Assignments</h2>
+                <button class="btn btn-primary btn-sm" id="admin-create-assign-btn">
+                  <i class="fa-solid fa-plus"></i> Add New Assignment
+                </button>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Course</th>
+                        <th>Title</th>
+                        <th>Due Date</th>
+                        <th>Priority</th>
+                        <th>Max Points</th>
+                        <th>Weight</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="admin-assignments-tbody">
+                      <!-- Rendered via JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Admin Content Tab 2: Gradebook -->
+          <div id="admin-tab-gradebook" class="admin-tab-content">
+            <div class="card">
+              <div class="card-header">
+                <h2>Interactive Gradebook Entry</h2>
+                <div class="gradebook-controls">
+                  <label for="gradebook-course-filter">Select Course:</label>
+                  <select id="gradebook-course-filter" class="form-select">
+                    <!-- Options populated via JS -->
+                  </select>
+                </div>
+              </div>
+              <div class="card-body">
+                <p class="table-help-text">Enter or update scores directly in the table below and click <strong>Save All Grades</strong>.</p>
+                <div class="table-responsive">
+                  <table class="data-table gradebook-table">
+                    <thead>
+                      <tr>
+                        <th>Assignment</th>
+                        <th>Course</th>
+                        <th>Submission Status</th>
+                        <th>Max Points</th>
+                        <th>Score Obtained</th>
+                        <th>Percentage</th>
+                        <th>Teacher Feedback</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="admin-gradebook-tbody">
+                      <!-- Rendered via JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Admin Content Tab 3: Review Submissions -->
+          <div id="admin-tab-submissions" class="admin-tab-content">
+            <div class="card">
+              <div class="card-header">
+                <h2>Student Submissions Inbox</h2>
+              </div>
+              <div class="card-body">
+                <div id="admin-submissions-list" class="submissions-list">
+                  <!-- Rendered via JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Admin Content Tab 4: Manage Courses -->
+          <div id="admin-tab-courses" class="admin-tab-content">
+            <div class="card">
+              <div class="card-header">
+                <h2>Active Courses</h2>
+                <button class="btn btn-primary btn-sm" id="admin-create-course-btn">
+                  <i class="fa-solid fa-plus"></i> Add Course
+                </button>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Code</th>
+                        <th>Course Name</th>
+                        <th>Instructor</th>
+                        <th>Schedule</th>
+                        <th>Room</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="admin-courses-tbody">
+                      <!-- Rendered via JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ==================== MODALS CONTAINER ==================== -->
+
+  <!-- Modal 1: Create / Edit Assignment -->
+  <div id="modal-assignment" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="modal-assignment-title">Create New Assignment</h2>
+        <button class="modal-close-btn" data-close-modal="modal-assignment">&times;</button>
+      </div>
+      <form id="form-assignment" class="modal-form">
+        <input type="hidden" id="assign-id-input">
+        
+        <div class="form-group">
+          <label for="assign-title-input">Assignment Title <span class="required">*</span></label>
+          <input type="text" id="assign-title-input" class="form-control" placeholder="e.g. Midterm Lab Report" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-half">
+            <label for="assign-course-select">Course <span class="required">*</span></label>
+            <select id="assign-course-select" class="form-control" required>
+              <!-- Options via JS -->
+            </select>
+          </div>
+          <div class="form-group col-half">
+            <label for="assign-priority-select">Priority Level</label>
+            <select id="assign-priority-select" class="form-control">
+              <option value="HIGH">High Priority</option>
+              <option value="MEDIUM" selected>Medium Priority</option>
+              <option value="LOW">Low Priority</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-half">
+            <label for="assign-date-input">Due Date & Time <span class="required">*</span></label>
+            <input type="datetime-local" id="assign-date-input" class="form-control" required>
+          </div>
+          <div class="form-group col-half">
+            <label for="assign-points-input">Total Points <span class="required">*</span></label>
+            <input type="number" id="assign-points-input" class="form-control" min="1" max="1000" value="100" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-half">
+            <label for="assign-weight-input">Grade Weight (%)</label>
+            <input type="number" id="assign-weight-input" class="form-control" min="1" max="100" value="15">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="assign-desc-input">Description & Instructions</label>
+          <textarea id="assign-desc-input" class="form-control" rows="3" placeholder="Provide instructions for students..."></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal="modal-assignment">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="save-assignment-btn">Save Assignment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 2: Create / Edit Course -->
+  <div id="modal-course" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="modal-course-title">Add New Course</h2>
+        <button class="modal-close-btn" data-close-modal="modal-course">&times;</button>
+      </div>
+      <form id="form-course" class="modal-form">
+        <input type="hidden" id="course-id-input">
+        
+        <div class="form-row">
+          <div class="form-group col-half">
+            <label for="course-code-input">Course Code <span class="required">*</span></label>
+            <input type="text" id="course-code-input" class="form-control" placeholder="e.g. CS101" required>
+          </div>
+          <div class="form-group col-half">
+            <label for="course-color-input">Badge Theme Color</label>
+            <select id="course-color-input" class="form-control">
+              <option value="#6366f1">Indigo (Default)</option>
+              <option value="#3b82f6">Blue</option>
+              <option value="#10b981">Emerald Green</option>
+              <option value="#f59e0b">Amber Orange</option>
+              <option value="#8b5cf6">Purple</option>
+              <option value="#ec4899">Pink</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="course-name-input">Course Name <span class="required">*</span></label>
+          <input type="text" id="course-name-input" class="form-control" placeholder="e.g. Data Structures & Algorithms" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-half">
+            <label for="course-instructor-input">Instructor Name</label>
+            <input type="text" id="course-instructor-input" class="form-control" placeholder="e.g. Dr. Alan Turing">
+          </div>
+          <div class="form-group col-half">
+            <label for="course-room-input">Room / Location</label>
+            <input type="text" id="course-room-input" class="form-control" placeholder="e.g. Science Bldg 302">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="course-schedule-input">Schedule</label>
+          <input type="text" id="course-schedule-input" class="form-control" placeholder="e.g. Mon, Wed 10:00 AM - 11:30 AM">
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal="modal-course">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Course</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 3: Submit Assignment (Student) -->
+  <div id="modal-submit" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Submit Work</h2>
+        <button class="modal-close-btn" data-close-modal="modal-submit">&times;</button>
+      </div>
+      <form id="form-submit-work" class="modal-form">
+        <input type="hidden" id="submit-assign-id">
+        
+        <div class="submit-summary-box">
+          <h3 id="submit-assign-title-display">Assignment Title</h3>
+          <p id="submit-assign-meta-display">Course Code • Due Date</p>
+        </div>
+
+        <div class="form-group">
+          <label for="submit-text-input">Submission Notes / Text Content <span class="required">*</span></label>
+          <textarea id="submit-text-input" class="form-control" rows="4" placeholder="Enter your response, solution summary, or link to your work..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="submit-file-input">Attachment Simulation (Optional)</label>
+          <input type="text" id="submit-file-input" class="form-control" placeholder="e.g. final_project_submission.pdf">
+          <small class="form-help">Type a filename to simulate attaching a file to your submission.</small>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal="modal-submit">Cancel</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Turn In Work</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 4: Grade Submission (Teacher) -->
+  <div id="modal-grade" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Grade Assignment</h2>
+        <button class="modal-close-btn" data-close-modal="modal-grade">&times;</button>
+      </div>
+      <form id="form-grade-work" class="modal-form">
+        <input type="hidden" id="grade-assign-id">
+
+        <div class="submit-summary-box">
+          <h3 id="grade-assign-title-display">Assignment Title</h3>
+          <p id="grade-assign-student-display">Student: Alex Morgan</p>
+          <div class="student-work-preview" id="grade-student-work-preview">
+            <!-- Student notes rendered here -->
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-half">
+            <label for="grade-score-input">Score Obtained <span class="required">*</span></label>
+            <input type="number" id="grade-score-input" class="form-control" min="0" max="1000" step="0.5" required>
+          </div>
+          <div class="form-group col-half">
+            <label>Max Points Available</label>
+            <input type="text" id="grade-max-points-display" class="form-control" readonly>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="grade-feedback-input">Teacher Feedback & Comments</label>
+          <textarea id="grade-feedback-input" class="form-control" rows="3" placeholder="Great work! Well formatted code and clean structure."></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal="modal-grade">Cancel</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check-double"></i> Save Grade</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
