@@ -1,372 +1,103 @@
-# Student Course Management App
+# Case Study: EduPulse — Student Course & Assignment Management App
 
-A simple student course management app built as a one-day product engineering practice project.
-
-The app allows students to view their courses, assignments, and grades, while teachers can create courses, add assignments, and grade student submissions.
-
-The goal of this project is to practice building a small full-stack application with authentication, role-based access, database relationships, and basic CRUD operations.
-
-## 🎯 Goal
-
-This project is mainly for learning and experimentation.
-
-I want to practice:
-
-* Building a full-stack application
-* Working with a database
-* Authentication
-* Role-based access
-* CRUD operations
-* API/server-side logic
-* Forms and validation
-* Dashboard data
-* Git and GitHub
-* Deploying an application
+A responsive, client-side web application designed to help students track coursework, monitor GPA, and submit assignments, while providing teachers with an intuitive portal to create courses, manage assignments, and grade student work.
 
 ---
 
-# 👥 User Roles
+## 📌 Project Overview
 
-There are two user types.
+**EduPulse** was built as a hands-on product engineering project to practice designing a full-featured dashboard application with dual user personas, complex weighted score calculations, and real-time client-side state management.
 
-### Student
-
-Students can:
-
-* Sign up and log in
-* View their courses
-* View assignments
-* Submit an assignment
-* View their grades
-
-### Teacher
-
-Teachers can:
-
-* Sign up and log in
-* Create courses
-* Create assignments
-* View student submissions
-* Grade submissions
+Unlike standard static prototypes, EduPulse is a fully interactive Single-Page Application (SPA) that operates entirely in the browser with persistent local storage and instant role toggling.
 
 ---
 
-# ⭐ Core Features
+## 🎯 Why I Built It
 
-## Authentication
+The primary objective was to practice end-to-end frontend product engineering without relying on heavy frameworks or backend infrastructure. Key goals included:
 
-* Sign up
-* Login
-* Logout
-* User roles
-* Protected dashboard
-
-## Student Dashboard
-
-Students can see:
-
-* Number of courses
-* Upcoming assignments
-* Recent grades
-* Average grade
-
-## Teacher Dashboard
-
-Teachers can see:
-
-* Number of courses
-* Number of assignments
-* Pending submissions
-* Recent activity
-
-## Courses
-
-Teachers can:
-
-* Create a course
-* Edit a course
-* Delete a course
-
-Students can:
-
-* View available courses
-* View course details
-
-## Assignments
-
-Teachers can create assignments containing:
-
-* Title
-* Description
-* Course
-* Due date
-
-Students can:
-
-* View assignments
-* Submit an assignment
-* See whether an assignment has been submitted
-
-## Grades
-
-Teachers can:
-
-* View submissions
-* Add a grade
-* Add short feedback
-
-Students can:
-
-* View their grades
-* View teacher feedback
+* **Dual-User Experience Design:** Building distinct workflows for Students (tracking deadlines, submitting work, checking GPA) and Teachers (course management, coursework creation, inline grading).
+* **State & Data Persistence:** Architecting a clean client-side state store backed by `localStorage` with automated data validation (e.g., auto-marking overdue tasks).
+* **Mathematical Operations in JS:** Implementing real-time GPA algorithms based on weighted course assignments and letter grade conversions.
+* **Modern Vanilla Web Skills:** Deepening skills in HTML5, Vanilla JavaScript (ES6+), custom CSS design systems (CSS variables, glassmorphic UI, responsive layouts), and accessibility patterns.
 
 ---
 
-# 🗄️ Simple Database Structure
+## ⭐ Implemented Features
 
-The application can use the following tables.
+### 👤 1. Role Switcher & Persona Management
+* **Instant Role Toggle:** Switch between **Student** (Alex Morgan) and **Teacher / Admin** (Prof. Robert Davis) at any time via the top navigation toggle.
+* **Role-Based UI Visibility:** Dynamic rendering adjusts navigation items, action buttons, and portal views based on the active role.
 
-### Users
+### 🎓 2. Student Experience
+* **Interactive Dashboard:**
+  * **Key Metrics:** Real-time Overall GPA, pending tasks count, completion rate percentage, and total enrolled courses.
+  * **Urgent Deadlines Widget:** Displays upcoming tasks sorted by due date.
+  * **Course Overview:** Visual progress cards showing course grades.
+  * **Recent Grades & Feedback Feed:** Quick summary of recently evaluated work.
+* **My Courses View:** Grid of enrolled subjects (e.g., CS101, MATH202) showing schedule, room details, instructor info, coursework progress bars, and current grades.
+* **Assignments & Deadlines Hub:**
+  * **Filter Tabs:** View all tasks or filter by status (`Pending`, `Submitted`, `Graded`, `Overdue`).
+  * **Filter & Sort Controls:** Filter by specific course or priority (`High`, `Medium`, `Low`), and sort by due date or priority.
+  * **Global Search:** Live text search across assignment titles, descriptions, and course codes.
+* **Assignment Submission Modal:** Students can turn in work by adding text notes and simulating file attachments.
+* **Grades & Performance Analytics:**
+  * **Cumulative GPA Display:** Weighted out of 4.00 with academic standing indicators.
+  * **Performance Metrics:** Average score, total graded items, best performing course, and letter grade equivalents (A, A-, B+, etc.).
+  * **Course Breakdown Tables:** Itemized list of all assignments, weights, points, percentage scores, and teacher comments.
 
-```text
-id
-name
-email
-password
-role
-created_at
-```
+### 🛠️ 3. Teacher & Admin Portal
+* **Management Hub Navigation:** 4 dedicated sub-tabs for administrative tasks:
+  1. **Manage Assignments:** Full table view of created coursework with quick edit and deletion tools.
+  2. **Interactive Gradebook:** Inline score and feedback editing table with quick-save capabilities.
+  3. **Review Submissions Inbox:** Dedicated view for inspecting student text submissions and attached file metadata with a one-click grading modal.
+  4. **Manage Courses:** Table of active courses with edit and creation features.
+* **Coursework Modals:** Modal dialogs for creating or editing courses (course code, theme color, instructor, schedule, room) and assignments (title, course selection, priority, due date/time, max points, grade weight %, instructions).
 
-### Courses
-
-```text
-id
-name
-description
-teacher_id
-created_at
-```
-
-### Enrollments
-
-```text
-id
-student_id
-course_id
-```
-
-### Assignments
-
-```text
-id
-course_id
-title
-description
-due_date
-created_at
-```
-
-### Submissions
-
-```text
-id
-assignment_id
-student_id
-content
-submitted_at
-grade
-feedback
-```
-
-Keep the database simple. A separate grades table is not necessary for this practice project.
+### 🔔 4. Smart System Utilities
+* **Urgent Deadline Notifications:** Header notification bell with a dropdown listing items due within 48 hours or overdue.
+* **Auto-Overdue Evaluator:** Automatically checks task deadlines against the current time and updates task statuses.
+* **Demo Data Reset:** One-click option in the sidebar to reset all application state to initial seed data.
+* **Toast Notifications:** Feedback popups for actions like saving grades, creating assignments, or turning in work.
 
 ---
 
-# 🔐 Basic Permissions
+## 🛠️ Technologies Used
 
-Students should only be able to:
-
-* View their own submissions
-* View their own grades
-* Access student features
-
-Teachers should only be able to:
-
-* Manage their own courses
-* Manage assignments for their courses
-* Grade submissions for their courses
-
-The backend should enforce these permissions rather than relying only on the frontend.
+* **Frontend Structure:** HTML5 (Semantic elements, accessible modal dialogs, data attributes)
+* **Styling & UI Design:** Vanilla CSS3 (Custom CSS properties, Glassmorphism backdrop filters, CSS Grid & Flexbox, micro-transitions)
+* **Application Logic:** Vanilla JavaScript (ES6+, IIFE module pattern, event delegation, client-side routing)
+* **Data Persistence:** Browser `localStorage` API (`edupulse_app_data_v1`)
+* **Assets & Typography:** FontAwesome 6.4 (Icons), Google Fonts (Inter & Outfit)
 
 ---
 
-# 📱 Main Pages
+## 💡 Key Decisions
 
-## Public
-
-```text
-/
- /login
- /register
-```
-
-## Student
-
-```text
-/student/dashboard
-/student/courses
-/student/courses/[id]
-/student/assignments
-/student/grades
-```
-
-## Teacher
-
-```text
-/teacher/dashboard
-/teacher/courses
-/teacher/courses/[id]
-/teacher/assignments
-/teacher/submissions
-```
+1. **Vanilla JS & No Build Step:** Opted for pure Vanilla HTML/CSS/JS rather than framework tooling. This made the application lightweight, fast, and easy to run directly in any browser without build dependencies.
+2. **Client-Side SPA Architecture:** Implemented single-page view switching using section IDs and `data-view` attributes for instant navigation without page reloads.
+3. **Unified State Store & Centralized Renderer:** Maintained a single `appState` object saved in `localStorage`, paired with a `renderAllViews()` execution pipeline to ensure UI consistency whenever data changes.
+4. **Simulated Role Switcher over Heavy Auth:** Used a header toggle to switch between student and teacher modes instead of requiring account creation, allowing immediate exploration of both user flows.
+5. **Simulated File Attachments:** Allowed users to input simulated attachment filenames during submission, keeping the app completely functional without needing cloud blob storage.
 
 ---
 
-# 🛠️ Suggested Stack
+## 📚 What I Learned
 
-* Next.js
-* React
-* TypeScript
-* Tailwind CSS
-* PostgreSQL
-* Supabase
-* Git
-* GitHub
-* Vercel
-
-The exact stack can be changed if another setup makes the project faster to build.
+* **State Synchronization:** Managing reactive UI updates across multiple views (Dashboard, Assignment lists, Gradebook, Header badges) from a single source of truth in Vanilla JS.
+* **Weighted Grade Algorithms:** Writing algorithms to calculate weighted course averages (`(score / maxPoints) * weight`) and converting percentage results into standard GPA scales (4.0 scale).
+* **DOM Event Delegation:** Using global event listeners and `data-*` attributes to handle dynamic modal triggers and table interactions efficiently.
+* **UI/UX Refinement:** Applying glassmorphism design trends, dark theme color palettes, and feedback toasts to enhance user experience.
 
 ---
 
-# 🚀 One-Day Development Plan
+## 🔮 What I Would Improve
 
-## Step 1 — Setup
+If expanding this project beyond a client-side practice application, I would:
 
-* Create project
-* Set up styling
-* Connect database
-* Set up authentication
+1. **Connect a Real Backend:** Integrate Firebase or Node.js with PostgreSQL/Supabase for authentic multi-user registration, database storage, and secure server-side role authorization.
+2. **Real File Uploads:** Add cloud file storage (e.g. AWS S3 or Supabase Storage) for actual PDF/assignment file uploads.
+3. **Student Enrollment System:** Enable students to browse a course catalog and self-enroll or drop subjects dynamically.
+4. **Course Discussions & Announcements:** Build a real-time message board for instructors to post announcements and answer student questions.
+5. **Export & Reports:** Add functionality to export student transcripts or gradebook tables as PDF/CSV files.
 
-## Step 2 — Core Data
-
-* Create database tables
-* Create sample users
-* Create sample courses
-* Create sample assignments
-
-## Step 3 — Student Experience
-
-* Student dashboard
-* Course list
-* Assignment list
-* Submission
-* Grades
-
-## Step 4 — Teacher Experience
-
-* Teacher dashboard
-* Course creation
-* Assignment creation
-* Submission list
-* Grading
-
-## Step 5 — Polish
-
-* Loading states
-* Empty states
-* Basic validation
-* Responsive layout
-* Fix obvious bugs
-
-## Step 6 — Deploy
-
-* Push to GitHub
-* Deploy to Vercel
-* Test the production version
-
----
-
-# 🧪 Important Edge Cases
-
-Keep the edge cases limited to the most useful ones:
-
-* User tries to access the wrong dashboard
-* Student tries to view another student's submission
-* Teacher tries to edit another teacher's course
-* Student submits an assignment twice
-* Assignment has passed its due date
-* Course has no assignments
-* Student has no grades
-
----
-
-# 📌 Out of Scope
-
-To keep this project achievable in one day, the following are intentionally excluded:
-
-* Email notifications
-* Push notifications
-* File uploads
-* Attendance
-* Course discussions
-* School administration
-* Parent accounts
-* Multiple schools
-* AI features
-* Complex analytics
-* Calendar
-* Payment features
-
----
-
-# 🎯 Definition of Done
-
-The project is complete when:
-
-* [ ] Users can register and log in
-* [ ] Users have student or teacher roles
-* [ ] Students can view courses
-* [ ] Teachers can create courses
-* [ ] Teachers can create assignments
-* [ ] Students can submit assignments
-* [ ] Teachers can grade submissions
-* [ ] Students can view grades
-* [ ] Basic permissions work
-* [ ] The app is responsive
-* [ ] The project is deployed
-* [ ] The code is pushed to GitHub
-
----
-
-# 📚 What I Practiced
-
-This project helped me practice:
-
-* Frontend development
-* Backend logic
-* Database relationships
-* Authentication
-* Authorization
-* CRUD operations
-* Form handling
-* Data fetching
-* State management
-* Error handling
-* Git/GitHub
-* Deployment
-
----
-
-# 📝 Development Journal
-
-See [`journal.md`](./journal.md) for notes about the development process, technical decisions, problems, and lessons learned.
